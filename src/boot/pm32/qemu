@@ -1,0 +1,9 @@
+#!/bin/sh
+
+megs=16
+boot=a
+media=floppy
+file=boot.img
+
+qemu-system-i386 $@ -m $megs -boot $boot \
+    -drive format=raw,if=$media,file=$file

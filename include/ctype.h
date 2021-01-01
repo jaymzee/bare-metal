@@ -1,0 +1,1 @@
+#define isspace(c) (c==' ')

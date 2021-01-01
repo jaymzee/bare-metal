@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+# write boot sector and 2nd level boot loader to a 1.44MB floppy disk image
+import sys
+
+if len(sys.argv) != 4:
+    print("Usage: mkboot image bootloader program")
+    exit(1)
+
+with open(sys.argv[2], mode='rb') as file:
+    boot = file.read()
+with open(sys.argv[3], mode='rb') as file:
+    program = file.read()
+with open(sys.argv[1], mode='wb') as file:
+    file.write(boot)
+    file.write(program)
+    # fill remaining blocks with zero
+    count = len(boot) + len(program)
+    file.write(bytes(2880*512 - count))
