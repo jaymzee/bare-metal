@@ -18,8 +18,8 @@ void _init_IDT(void);
 void _start(void)
 {
     COM_Init();
-    SetIntervalTimer(60);
 #ifdef __x86_64__
+    SetIntervalTimer(60);
     _init_IDT(); // install CPU Exception handlers
 #endif
     main(1, args, envp);

@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <sys/io.h>
 #include <sys/pit.h>
 #include <sys/ps2.h>
@@ -31,7 +32,7 @@ void NoSound() {
 }
 
 
-int usleep(unsigned long usec)
+int usleep(uint64_t usec)
 {
     unsigned long until = system_time + usec;
 

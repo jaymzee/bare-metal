@@ -3,7 +3,7 @@ OBJECTS = stage1.o main.o
 OBJECTS += stdio.o string.o serial.o conio.o kbd_US.o interrupt.o time.o
 LIBC = ../../libc
 LIBSYS = ../../libsys
-INCLUDE = ../../../include
+INCLUDE = ../../include
 CC = gcc
 CFLAGS = -g -std=c99 -pedantic -Wall
 CFLAGS += -m16 -ffreestanding
