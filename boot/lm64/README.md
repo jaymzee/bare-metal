@@ -3,7 +3,7 @@
 memory map
 
     0x00f00000 0x00ffffff stack for protected mode 1M
-    0x00010000 0x00eFFFFF program memory 15M - 64K
+    0x00040000 0x00eFFFFF program memory (15M - 256K)
     0x0000f000 0x0000ffff PT 14 - 16MB of memory
     0x0000e000 0x0000ffff PT 12 - 14MB of memory
     0x0000d000 0x0000ffff PT 10 - 12MB of memory

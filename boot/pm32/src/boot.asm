@@ -3,7 +3,7 @@
 ; assemble with nasm
 
 STACK32_TOP equ 0x1000000		; top of 16MB memory
-LOADADDR    equ 0x10000
+LOADADDR    equ 0x40000
 GDT         equ 0x2000
 GDT_SIZE    equ gdt.end - gdt
 GDTR        equ GDT + GDT_SIZE

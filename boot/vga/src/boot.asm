@@ -5,7 +5,7 @@
 ; assemble with nasm
 
 STACK64_TOP equ 0x1000000	; top of 16MB memory
-LOADADDR    equ 0x10000		; address to load program into
+LOADADDR    equ 0x40000		; address to load program into
 GDT         equ 0x2000
 GDT_SIZE    equ gdt.end - gdt
 GDTR        equ GDT + GDT_SIZE
