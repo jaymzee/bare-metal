@@ -14,6 +14,8 @@ static char *args[1] = {"program"};
 static char *envp[2] = {NULL, NULL};
 
 void _init_IDT(void);
+void _enable_SSE(void);
+void SystemTimerHandler(void);
 
 void _start(void)
 {
@@ -21,13 +23,12 @@ void _start(void)
 #ifdef __x86_64__
     SetIntervalTimer(60);
     _init_IDT(); // install CPU Exception handlers
+    _enable_SSE();
 #endif
     main(1, args, envp);
 }
 
 #ifdef __x86_64__
-
-void SystemTimerHandler(void);
 
 // this sets up the interrupt descriptor tables then enables interrupts
 void _init_IDT(void)

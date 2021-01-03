@@ -55,6 +55,11 @@
 	default rel
 	section .text
 
+	global _enable_SSE
+_enable_SSE:
+	ensse
+	ret
+
 ; cpu exceptions
 
 	; Divide-by-zero Error: Fault

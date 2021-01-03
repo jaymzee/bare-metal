@@ -1,0 +1,97 @@
+x86 Control Registers
+---------------------
+
+CR0
+    0   PE  Protect Mode Enable     If 1, system is in protected mode
+    1   MP  Monitor co-processor    Controls interaction of WAIT/FWAIT
+                                    with TS flag in CR0
+    2   EM  Emulation               If set, no x87 floating-point unit present
+                                    if clear, x87 FPU present
+    3   TS  Task switched           Allows saving x87 task context upon a task
+                                    switch only after x87 instruction used
+    4   ET  Extension type          On the 386, it allowed to specify whether
+                                    math coprocessor was a 80287 or 80387
+    5   NE  Numeric error           Enable internal x87 floating point error
+                                    reporting when set, else enables PC style
+                                    x87 error detection
+   16   WP  Write protect           When set, the CPU can't write to read-only
+                                    pages when priviledge level is 0
+   18   AM  Alignment mask          Alignment check enabled if AM set, AC flag
+                                    (in ELFAGS) set, and privilege level is 3
+   29   NW  Not-write through       Global enable/disable write through caching
+   30   CD  Cache disable           Global enable/disable the memory cache
+   31   PG  Paging                  If 1, enable paging and use the CR3
+                                    register, else disable paging
+
+CR1
+            Reserved
+
+CR2
+    PFLA    Page Fault Linear Addr  When a page fault occurs, the address the
+                                    program attempted to access is stored here
+
+CR3
+    PDBR    Page Directory Base Reg Typically, the upper 20 bits of CR3 store
+                                    the physical address of the first page
+                                    directory entry.
+    PCID    process-context ident   If PCIDE bit in CR4 is set,
+                                    the lowest 12 bits of CR3 are used for the
+                                    process-context identifier (PCID)
+
+CR4
+    0   VME Virtual 8086 Mode Ext   If set, enables support for the virtual
+                                    interrupt flag (VIF) in virtual-8086 mode
+    1   PVI Protected-mode Virt Int If set, enables support for the virtual
+                                    interrupt flag (VIF in protected mode
+    2   TSD Time Stamp Disable      If set, RDTSC instruction can only be
+                                    executed when in ring 0, otherwise RDTSC
+                                    can be used at any privilege level.
+    3   DE  Debugging Extensions    If set, enables debug register base breaks
+                                    on I/O space access
+    4   PSE Page Size Extension     If unset, page size is 4KiB, else 4MiB
+                                    This bit ignored in PAE and long mode
+    5   PAE Physical Addr Extension If set, changes page table layout
+    6   MCE Machine Check Exception If set, enables machine check interrupts
+                                    to occur
+    7   PGE Page Global Enabled     If set, address translations (PDE or PTE)
+                                    may be shared between address spaces
+    8   PCE Perf-Mon Counter Enable If set, RDPMC can be executed at any
+                                    privilege level, else RDPMC can only be
+                                    used at in ring 0
+    9   OSFXR OS FXSAVE/FXRSTOR     Enables SSE instr and fast FPU save/restor
+   10   OSXMMEXCPT  OS SSE Except   If set, enables unmasked SSE exceptions
+   11   UMIP User-Mode Instr Prev   If set, the SGDT, SIDT, SLDT, SMSW and STR
+                                    cannot be executed if CPL > 0
+   12   LA57                        If set, enables 5-Level Paging
+   13   VMXE Virtual Machine Ext    Intel VT-x x86 virtualization
+   14   SMXE Safer Mode Extensions  Trusted Execution Technology (TXT)
+   16   FSGSBASE                    Enables instructions RDFSBASE, RDGSBASE,
+                                    WRSFBASE, and WRGSBASE
+   17   PCIDE                       enables process-context identifiers (PCIDs)
+   18   OSXSAVE                     XSAVE and Processor Extended States enable
+   20   SMEP Supervisor Exec Prot   If set, execution of code in a higher ring
+                                    generates a fault
+   21   SMAP Supervisor Access Prot If set, access of data in a higher ring
+                                    generates a fault
+   22   PKE Protection Key Enable
+
+CR5-7
+        Reserved
+
+CR8 (accessible in 64-bit mode using REX prefix 0x44)
+    TPR Task Priority Register
+
+EFER    Extended Feature Enable Register (MSR 0xC0000080)
+    0   SCE     System Call Extensions
+    1   DPE
+    2   SEWBED
+    3   GEWBED
+    4   L2D
+    8   LME     Long Mode Enable
+   10   LMA     Long Mode Active
+   11   NXE     No-Execute Enable
+   12   SVME    Secure Virtual Machine Enable
+   13   LMSLE   Long Mode Segment Limit Enable
+   14   FFXSR   Fast FXSAVE/FXRSTOR
+   15   TCE     Translation Cache Extension
+

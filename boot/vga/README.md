@@ -1,5 +1,5 @@
-# bootloader that switches to long mode with paging and runs 64-bit C code
-VGA mode 13h and draws some lines
+# bootloader that set CPU to long mode with paging and runs 64-bit C code
+program sets display to VGA mode 13h and draws some lines
 
 memory map
 

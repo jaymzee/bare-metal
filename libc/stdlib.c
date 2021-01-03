@@ -87,3 +87,28 @@ atol(char *str)
     }
     return result;
 }
+
+int rand_r(unsigned int *seedp)
+{
+  unsigned int next = *seedp;
+  int result;
+
+  next *= 1103515245;
+  next += 12345;
+  result = (unsigned int) (next / 65536) % 2048;
+
+  next *= 1103515245;
+  next += 12345;
+  result <<= 10;
+  result ^= (unsigned int) (next / 65536) % 1024;
+
+  next *= 1103515245;
+  next += 12345;
+  result <<= 10;
+  result ^= (unsigned int) (next / 65536) % 1024;
+
+  *seedp = next;
+
+  return result;
+}
+
