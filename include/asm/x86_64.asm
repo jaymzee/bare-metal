@@ -139,13 +139,13 @@ endstruc
 ; enable SSE instructions
 ;   rax is clobbered
 %macro ensse 0
-	mov rax, cr0
-	and ax, 0xFFFB			; clear coprocessor emulation CR0.EM
-	or ax, 0x2			; set coprocessor monitoring  CR0.MP
-	mov cr0, rax
-	mov rax, cr4
-	or ax, 3 << 9			; set CR4.OSFXSR and CR4.OSXMMEXCPT
-	mov cr4, rax
+	mov	rax, cr0
+	and	ax, 0xFFFB		; clear coprocessor emulation CR0.EM
+	or	ax, 0x2			; set coprocessor monitoring  CR0.MP
+	mov	cr0, rax
+	mov	rax, cr4
+	or	ax, 3 << 9		; set CR4.OSFXSR and CR4.OSXMMEXCPT
+	mov	cr4, rax
 %endmacro
 
 ; enable AVX instructions
@@ -153,8 +153,11 @@ endstruc
 ;   rdx is clobbered
 ;   rcx is clobbered
 %macro enavx 0
-	xor rcx, rcx
-	xgetbv				; load XCR0 register
+	mov	rax, cr4
+	or	eax, 1 << 18		; set OSXSAVE
+	mov	cr4, rax
+	xor	rcx, rcx
+	xgetbv				; load XCR0 register into RAX,RDX
 	or	eax, 7			; set AVX, SSE, x87 bits
 	xsetbv				; save back to XCR0
 %endmacro
