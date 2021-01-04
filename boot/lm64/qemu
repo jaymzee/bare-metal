@@ -7,4 +7,5 @@ file=boot.img
 
 qemu-system-x86_64 $@ -m $megs -boot $boot \
     -drive format=raw,if=$media,file=$file \
-    -soundhw pcspk
+    -soundhw pcspk \
+    -cpu SandyBridge

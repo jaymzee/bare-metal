@@ -60,6 +60,16 @@ _enable_SSE:
 	ensse
 	ret
 
+	global _cpuid
+_cpuid:
+	mov	eax, esi
+	cpuid
+	mov	[rdi], ebx
+	mov	[rdi+4], edx
+	mov	[rdi+8], ecx
+	mov	[rdi+0xc], eax
+	ret
+
 ; cpu exceptions
 
 	; Divide-by-zero Error: Fault

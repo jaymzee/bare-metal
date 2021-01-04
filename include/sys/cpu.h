@@ -84,6 +84,18 @@ struct cpu_reg {
 };
 #endif
 
+struct cpuid_reg {
+    uint32_t ebx;
+    uint32_t edx;
+    uint32_t ecx;
+    uint32_t eax;
+};
+
+union cpuid_result {
+    struct cpuid_reg reg;
+    char str[12];
+};
+
 // DumpCPURegister dumps the CPU registers to sbuf
 //   ctrl: set to true to show cpu control registers
 // make sure sbuf is large enough to hold contents
@@ -93,3 +105,4 @@ void DumpCPURegisters(char *sbuf, const struct cpu_reg *reg, int ctrl);
 // make sure sbuf is large enough to hold contents
 void DumpMem(char *sbuf, void *ptr, int n);
 
+void _cpuid(struct cpuid_reg *result, uint32_t eax);

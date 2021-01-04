@@ -31,6 +31,13 @@ struc reg
 .size	equ	($ + 15) & 0xFFF0	; 16 byte aligned
 endstruc
 
+struc cpuid_result
+.ebx	resd	1
+.edx	resd	1
+.ecx	resd	1
+.eax	resd	1
+endstruc
+
 ; save all registers to register save area
 ; eax (rax) is clobbered but it is saved first
 %macro	savregs	1
