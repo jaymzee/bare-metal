@@ -16,19 +16,19 @@ void CreateColorPalette(struct color pal[256])
         pal[i].b = i;
     }
     for (int i = 64; i < 128; i++) {
-        pal[i].r = i;
+        pal[i].r = i & 0x3f;
         pal[i].g = 0;
         pal[i].b = 0;
     }
     for (int i = 128; i < 196; i++) {
         pal[i].r = 0;
-        pal[i].g = i;
+        pal[i].g = i & 0x3f;
         pal[i].b = 0;
     }
     for (int i = 196; i < 256; i++) {
         pal[i].r = 0;
         pal[i].g = 0;
-        pal[i].b = i;
+        pal[i].b = i & 0x3f;
     }
 }
 
