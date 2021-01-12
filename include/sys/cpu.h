@@ -93,7 +93,7 @@ struct cpuid_reg {
 
 union cpuid_result {
     struct cpuid_reg reg;
-    char str[12];
+    char str[16];
 };
 
 // DumpCPURegister dumps the CPU registers to sbuf
