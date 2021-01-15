@@ -4,70 +4,71 @@
 #include <sys/interrupt.h>
 #include <sys/rtc.h>
 #include <sys/serial.h>
-
-struct VbeInfoBlock {
-   char VbeSignature[4];            // == "VESA"
-   uint16_t VbeVersion;             // == 0x0300 for VBE 3.0
-   uint16_t OemStringPtr[2];        // isa vbeFarPtr
-   uint8_t Capabilities[4];
-   uint16_t VideoModePtr[2];        // isa vbeFarPtr
-   uint16_t TotalMemory;            // as # of 64KB blocks
-   char padding[512 - 20];          // allocation for the remaining data
-} __attribute__((packed));
-
-uint16_t GetVbeInfo(struct VbeInfoBlock *vib)
-{
-    uint16_t result;
-
-    __asm__ __volatile__ (
-        "mov $0x4f00,%%ax\n\t"
-        "mov %1,%%edi\n\t"
-        "int $0x10\n\t"
-        "mov %%ax,%0"
-        : "=g"(result)
-        : "Nd"(vib)
-        : "edi"
-    );
-    return result;
-}
+#include <sys/vesa.h>
 
 void ShowVesaModes(void)
 {
     char sbuf[80];
     char nbuf[20];
-    struct VbeInfoBlock vbe_info;
+    struct VbeInfo vbe_info;
 
     print("Querying VESA Video modes INT 0x10, AX=0x4f00\n");
-    int result = GetVbeInfo(&vbe_info);
+    int gi_status = VBE_GetInfo(&vbe_info);
 
-    if (result == 0x004f) { // data in vbe_info is valid
+    if (gi_status == 0x004f) { // data in vbe_info is valid
         int total_memory = vbe_info.TotalMemory << 16;
         uint16_t *modes = (uint16_t *)(vbe_info.VideoModePtr[1] << 16 | vbe_info.VideoModePtr[0]);
 
         strncpy(sbuf, vbe_info.VbeSignature, 4);
-        sbuf[4] = 10;
-        sbuf[5] = 0;
+        sbuf[4] = 0;
         print("Signature: ");
-        print(sbuf);
+        puts(sbuf);
         print("Vbe Version: 0x");
-        print(itoa(vbe_info.VbeVersion, 16, 4, nbuf));
-        print("\n");
+        puts(itoa(vbe_info.VbeVersion, 16, 4, nbuf));
         print("Total Memory: ");
-        print(itoa(total_memory, 10, 8, nbuf));
-        print("\n");
+        puts(itoa(total_memory, 10, 8, nbuf));
         print("Video Mode Pointer: 0x");
-        print(itoa((int)modes, 16, 8, nbuf));
-        print("\n");
+        puts(itoa((int)modes, 16, 8, nbuf));
 
         print("Modes:\n");
         for (int i = 0; modes[i] != 0xffff; i++) {
-            print(itoa(modes[i], 16, 4, nbuf));
+            struct VbeModeInfo inf;
+            int gmi_status = VBE_GetModeInfo(&inf, modes[i]);
+            if (gmi_status != 0x004f)
+                continue;
+
+            // Check if this is a graphics mode with linear frame buffer support
+            if ((inf.attributes & 0x90) != 0x90)
+                continue;
+
+            // Check if this is a packed pixel or direct color mode
+            if ( inf.memory_model != 4 && inf.memory_model != 6 )
+                continue;
+
+            print("mode: 0x");
+            print(itoa(modes[i], 16, 3, nbuf));
+            print("  res: ");
+            print(itoa(inf.Xres, 10, 4, nbuf));
+            print(" x ");
+            print(itoa(inf.Yres, 10, 4, nbuf));
+            print(" x ");
+            print(itoa(inf.bpp, 10, 2, nbuf));
+            print("  fbuf: 0x");
+            print(itoa(inf.physbase, 16, 8, nbuf));
+            if (inf.memory_model == 4) {
+                print("  packed-pixel");
+            } else {
+                print("  direct-color");
+            }
             print("\n");
+
+            if (i % 16 == 4) {
+                getchar();
+            }
         }
     } else {
-        print("query failure, returned 0x");
-        print(itoa(result, 16, 4, nbuf));
-        print("\n");
+        print("VBE GetInfo failed, returned 0x");
+        puts(itoa(gi_status, 16, 4, nbuf));
     }
 }
 
