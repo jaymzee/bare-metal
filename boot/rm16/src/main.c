@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <sys/interrupt.h>
@@ -80,7 +81,6 @@ void Main()
     struct time now;
 
     COM_Init();
-    ShowVesaModes();
     print("Real time clock demo\n");
     while (1) {
         print("\ntick count: ");
@@ -106,6 +106,13 @@ void Main()
             strcat(sbuf, itoa(now.second, 10, 2, nbuf));
             print("\nTime is ");
             print(strtr(sbuf, ' ', '0'));
+            break;
+        case 'v':
+            ShowVesaModes();
+            break;
+        case 's':
+            VBE_SetVideoMode(NULL, 0x4000 | 0x118);
+            break;
         }
     }
 }
