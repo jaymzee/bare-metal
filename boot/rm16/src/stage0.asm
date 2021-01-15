@@ -13,7 +13,7 @@ _start:
 	mov	sp, 0x7c00
 
 	mov	ah, 2h		; read sectors from drive
-	mov	al, 32		; sector count
+	mov	al, 64		; sector count (32K)
 	mov	ch, 0		; cylinder
 	mov	dh, 0		; head
 	mov	cl, 2		; sector
