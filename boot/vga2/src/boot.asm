@@ -49,7 +49,7 @@ _start:
 _set_video_mode:
 	push	di
 	mov	ax, 0x4f02
-	mov	bx, 0x4118
+	mov	bx, 0x4144
 	mov	di, 0
 	int	10h
 	pop	di

@@ -1,5 +1,5 @@
 # bootloader that set CPU to long mode with paging and runs 64-bit C code
-program sets display to vesa mode 118h and writes directly to framebuffer
+program sets display to vesa mode 144h and writes directly to framebuffer 0xfb000000
 
 memory map
     0x01000000 0x01ffffff framebuffer (maps to phys addr 0xfd000000)
