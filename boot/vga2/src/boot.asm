@@ -30,6 +30,7 @@ _start:
 	call	_load_program
 	a20enbio
 	call	_init_page_tables
+	call	_init_fb_page_tables
 	mov	si, gdt
 	mov	di, GDT
 	gdtcpy	GDT_SIZE
@@ -107,6 +108,39 @@ _init_page_tables:
 	pop	edi
 	ret
 
+_init_fb_page_tables:
+	push	ds
+	push	es
+	push	edi
+	cld
+	mov	ax, 0x1000
+	mov	ds, ax
+	mov	es, ax
+	mov	eax, 0x1000	; page size
+	mov	edx, 0x10003	;
+	mov	edi, 0x0000	; first page table
+	mov	edx, 0xfd000003	; R/W and Present
+	mov	cx, 4096	; map 16MB
+.fillpt	mov	[edi], edx	; PT[n] = n*0x1000 + 3
+	add	edx, eax
+	add	edi, 8
+	loop	.fillpt
+	xor	eax,eax
+	mov	ds,ax
+	mov	es,ax
+	mov	eax, 0x1000		; size of page (4K)
+	mov	edx, 0x10003		; edx points to first fb page table
+	mov	edi, PML4T + 0x2040	; edi should now point to PDT[8]
+	mov	cx, 8
+.pdtfb	mov	[edi], edx
+	add	edx, eax
+	add	edi, 8
+	loop	.pdtfb
+	pop	edi
+	pop	es
+	pop	ds
+	ret
+
 
 ; 64 bit code that run in long mode
 
@@ -152,5 +186,5 @@ gdt:
 .end:
 
 greeting:
-	db `loading x86_64 program...\r\n`, 0
+	db `loading...\r\n`, 0
 

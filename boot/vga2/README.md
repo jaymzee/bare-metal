@@ -2,7 +2,7 @@
 program sets display to vesa mode 118h and writes directly to framebuffer
 
 memory map
-
+    0x01000000 0x01ffffff framebuffer (maps to phys addr 0xfd000000)
     0x00f00000 0x00ffffff stack for protected mode 1M
     0x00040000 0x00eFFFFF program memory (15M - 256K)
     0x00017000 0x00017fff PT for framebuffer (14 - 16MB)
