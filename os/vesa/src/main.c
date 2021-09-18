@@ -29,13 +29,13 @@ int main(int argc, char *argv[], char *envp[])
     println("Hi resolution graphics in long mode (64-bit) demo");
     uint32_t *p32 = (uint32_t *)0x1000000;
 
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 256; i++) {
         p32[i+2048] = 0x00FF0000;
     }
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 256; i++) {
         p32[i+4096] = 0x0000FF00;
     }
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 256; i++) {
         p32[i+6144] = 0x000000FF;
     }
 

@@ -1,4 +1,8 @@
-# bootloader that switches to protected mode and runs 32-bit C code
+# Protected mode 32-bit demo
+single stage bootloader puts CPU into protected mode and executes 32-bit demo
+- serial and vga console
+- system timer and keyboard interrupt handling
+- demonstrate CPU exception handling (register dump)
 
 memory map
 

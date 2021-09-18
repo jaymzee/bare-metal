@@ -1,4 +1,9 @@
-## bootloader that puts CPU into long mode with paging and runs 64-bit C code
+## Long Mode 64 demo
+single stage bootloader puts CPU into long mode, then executes the 64-bit demo
+- serial and vga console
+- demonstrate system timer and keyboard interrupt handling
+- demonstrate CPU Exception handling
+- beep from pc speaker
 
 memory map
 

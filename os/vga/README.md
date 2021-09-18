@@ -1,5 +1,7 @@
-# bootloader that set CPU to long mode with paging and runs 64-bit C code
-program sets display to VGA mode 13h and draws some lines
+# VGA graphics demo (64-bit long mode)
+single stage bootloader puts CPU into long mode with paging and runs demo
+- display is set to VGA mode 13h
+- demonstrates line drawing
 
 memory map
 
