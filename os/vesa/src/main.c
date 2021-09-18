@@ -3,10 +3,9 @@
 #include <string.h>
 #include <sys/io.h>
 #include <sys/serial.h>
+#include <sys/graphics.h>
 
-uint8_t *vptr = (uint8_t *)0xfd000000;
-
-int main(int argc, char *argv[], char *envp[])
+void dump_page_tables()
 {
     char nbuf[20];
 
@@ -25,19 +24,19 @@ int main(int argc, char *argv[], char *envp[])
     for (int i = 0; i < 8; i++) {
         puts(ltoa(pt[i], 16, 16, nbuf));
     }
+}
+
+int main(int argc, char *argv[], char *envp[])
+{
+    dump_page_tables();
 
     println("Hi resolution graphics in long mode (64-bit) demo");
-    uint32_t *p32 = (uint32_t *)0x1000000;
 
-    for (int i = 0; i < 256; i++) {
-        p32[i+2048] = 0x00FF0000;
-    }
-    for (int i = 0; i < 256; i++) {
-        p32[i+4096] = 0x0000FF00;
-    }
-    for (int i = 0; i < 256; i++) {
-        p32[i+6144] = 0x000000FF;
-    }
+    // draw some lines
+    DrawLine32(0, 0, 1024, 768, 0x00FF00);
+    DrawLine32(0, 768, 1024, 0, 0xFF0000);
+    DrawLine32(0, 384, 1024, 384, 0x0000FF);
+    DrawLine32(512, 0, 512, 768, 0xFFFF00);
 
     while (1) {
         print("\npress a key ");

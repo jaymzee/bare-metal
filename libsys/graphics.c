@@ -2,18 +2,31 @@
 #include <sys/graphics.h>
 #include <sys/vga.h>
 
+#ifdef FBVIRTADDR
+static uint32_t *framebuffer = (uint32_t *)FBVIRTADDR;
+#define SET_PIXEL32(x,y,c) framebuffer[FBWIDTH*y+x]=c
+#endif
+
 #define SCREEN_WIDTH 320
-#define SET_PIXEL(x,y,c) video_ram[SCREEN_WIDTH*y+x]=color
+#define SET_PIXEL(x,y,c) video_ram[SCREEN_WIDTH*y+x]=c
 
 /* VGA Mode 13h drawing functions */
 
 static unsigned char *video_ram = (unsigned char *)VGA_VIDEO_MEM;
 
 void
-SetPixel(uint32_t x, uint32_t y, uint8_t color)
+SetPixel(uint16_t x, uint16_t y, uint8_t color)
 {
     SET_PIXEL(x, y, color);
 }
+
+#ifdef FBVIRTADDR
+void
+SetPixel32(uint16_t x, uint16_t y, uint32_t color)
+{
+    SET_PIXEL32(x, y, color);
+}
+#endif
 
 // Midpoint algorithm for 2D line
 void
@@ -69,6 +82,63 @@ DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color)
         }
     }
 }
+
+#ifdef FBVIRTADDR
+// Midpoint algorithm for 2D line
+void
+DrawLine32(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint32_t color)
+{
+    int dx = x1 - x0;
+    int dy = y1 - y0;
+    int x = x0;
+    int y = y0;
+    int incx = 1;
+    int incy = 1;
+
+    if (dx < 0) {
+        dx = -dx;
+        incx = -1;
+    }
+
+    if (dy < 0) {
+        dy = -dy;
+        incy = -1;
+    }
+
+    SET_PIXEL32(x, y, color);
+    if (dx > dy) {
+        const int incrE = dy * 2;
+        const int incrSE = (dy - dx) * 2;
+        int d = dy * 2 - dx;
+        while (x < x1) {
+            if (d <= 0) {
+                d += incrE;
+                x += incx;
+            } else {
+                d += incrSE;
+                x += incx;
+                y += incy;
+            }
+            SET_PIXEL32(x, y, color);
+        }
+    } else {
+        const int incrS = dx * 2;
+        const int incrSE = (dx - dy) * 2;
+        int d = dx * 2 - dy;
+        while (y < y1) {
+            if (d <= 0) {
+                d += incrS;
+                y += incy;
+            } else {
+                d += incrSE;
+                x += incx;
+                y += incy;
+            }
+            SET_PIXEL32(x, y, color);
+        }
+    }
+}
+#endif
 
 void
 SetColorPalette(const struct color pal[])
