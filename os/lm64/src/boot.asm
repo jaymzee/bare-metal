@@ -1,7 +1,7 @@
 ; ------------------------------------------------------------------------------
-; second stage bootloader enters long mode
-; paging is required in long mode
-; only the first 2MB is identity mapped to show proof of concept
+; bootloader initializes page tables and puts cpu into long mode
+; paging is required for long mode
+; only the first 16MB of memory is identity mapped to show proof of concept
 ; assemble with nasm
 
 STACK64_TOP equ 0x1000000	; top of 16MB memory

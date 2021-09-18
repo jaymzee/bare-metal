@@ -1,3 +1,6 @@
+; second stage bootloader
+; stage 0 loads 32KB of data so Main should immediately follows this
+
 	extern Main
 
 	bits 16

@@ -1,5 +1,5 @@
 ; ------------------------------------------------------------------------------
-; second stage bootloader enters 32-bit protected mode
+; bootloader initializes GDT and puts cpu into 32-bit protected mode
 ; assemble with nasm
 
 STACK32_TOP equ 0x1000000		; top of 16MB memory
