@@ -8,7 +8,7 @@ memory map
 
     0x01000000 0x01ffffff framebuffer (maps to phys addr 0xfd000000)
     0x00f00000 0x00ffffff stack for protected mode 1M
-    0x00040000 0x00eFFFFF program memory (15M - 256K)
+    0x00040000 0x00eFFFFF program memory (14.75MB)
     0x00017000 0x00017fff PT for framebuffer (14 - 16MB)
     0x00016000 0x00016fff PT for framebuffer (12 - 14MB)
     0x00015000 0x00015fff PT for framebuffer (10 - 12MB)
