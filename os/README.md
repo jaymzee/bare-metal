@@ -1,1 +1,1 @@
-# kernel examples
+# bootloader and kernel examples
