@@ -1,6 +1,8 @@
 ; second stage bootloader
 ; stage 0 loads 32KB of data so Main should immediately follows this
 
+%include "sys/vesa.asm"
+
 	extern Main
 
 	bits 16
@@ -9,6 +11,12 @@
 _start:
 	push	greeting
 	call	_print
+	xor	edi, edi
+	mov	di, sp
+	sub	sp, 512
+	;VBE_GetInfo
+	;call	_print
+	add	sp, 512
 	cli				; disable interrupts
 	mov	dword [0x20], timerISR	; install ISR
 	sti				; enable interrupts
@@ -46,6 +54,8 @@ _print:
 
 greeting:
 	db `switch to serial 0 console\r\n`, 0
+tmpstr:
+	db "            ", 0
 
 	global tick_counter
 tick_counter:

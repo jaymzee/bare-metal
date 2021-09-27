@@ -53,15 +53,17 @@ struct VbeCRTCInfo {
 static inline uint16_t VBE_GetInfo(struct VbeInfo *vib)
 {
     uint16_t result;
+    unsigned long vibhi = (unsigned long)vib >> 4 & 0xF000;
 
     __asm__ __volatile__ (
         "mov $0x4f00,%%ax\n\t"
-        "mov %1,%%edi\n\t"
+        "mov %1,%%es\n\t"
+        "mov %2,%%di\n\t"
         "int $0x10\n\t"
         "mov %%ax,%0"
         : "=g"(result)
-        : ""(vib)
-        : "edi", "ax"
+        : ""(vibhi), ""(vib)
+        : "di", "ax"
     );
     return result;
 }
@@ -69,16 +71,18 @@ static inline uint16_t VBE_GetInfo(struct VbeInfo *vib)
 static inline uint16_t VBE_GetModeInfo(struct VbeModeInfo *vmi, uint16_t mode)
 {
     uint16_t result;
+    unsigned long vmihi = (unsigned long)vmi >> 4 & 0xF000;
 
     __asm__ __volatile__ (
         "mov $0x4f01,%%ax\n\t"
-        "mov %2,%%cx\n\t"
-        "mov %1,%%edi\n\t"
+        "mov %1,%%es\n\t"
+        "mov %2,%%di\n\t"
+        "mov %3,%%cx\n\t"
         "int $0x10\n\t"
         "mov %%ax,%0"
         : "=g"(result)
-        : ""(vmi), ""(mode)
-        : "edi", "cx", "ax"
+        : ""(vmihi), ""(vmi), ""(mode)
+        : "di", "cx", "ax"
     );
     return result;
 }
@@ -89,16 +93,18 @@ static inline uint16_t VBE_GetModeInfo(struct VbeModeInfo *vmi, uint16_t mode)
 static inline uint16_t VBE_SetVideoMode(struct VbeCRTCInfo *vci, uint16_t mode)
 {
     uint16_t result;
+    unsigned long vcihi = (unsigned long)vci >> 4 & 0xF000;
 
     __asm__ __volatile__ (
         "mov $0x4f02,%%ax\n\t"
-        "mov %2,%%bx\n\t"
-        "mov %1,%%edi\n\t"
+        "mov %1,%%es\n\t"
+        "mov %2,%%di\n\t"
+        "mov %3,%%bx\n\t"
         "int $0x10\n\t"
         "mov %%ax,%0"
         : "=g"(result)
-        : ""(vci), ""(mode)
-        : "edi", "bx", "ax"
+        : ""(vcihi), ""(vci), ""(mode)
+        : "di", "bx", "ax"
     );
     return result;
 }

@@ -9,7 +9,7 @@ CFLAGS = -g -std=c99 -pedantic -Wall
 CFLAGS += -m16 -ffreestanding
 CFLAGS += -fno-pic -fno-exceptions -fno-asynchronous-unwind-tables
 CFLAGS += -nostdinc -I $(addsuffix /,$(INCLUDE))
-ASFLAGS = -g -F dwarf -f elf
+ASFLAGS = -g -F dwarf -f elf -i $(addsuffix /asm/,$(INCLUDE))
 LDFLAGS = -m elf_i386 --nmagic  # --nmagic eliminates gaps between sections
 GCCVERSION := $(shell gcc -dumpversion)
 ifeq ($(shell expr $(GCCVERSION) \>= 8), 1)
