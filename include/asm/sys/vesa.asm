@@ -87,26 +87,3 @@ endstruc
 	mov	bx, %1
 	int	0x10
 %endmacro
-
-%if 0
-
-/* VBE_SetVideoMode
- * you should or the mode with 0x4000 to make use of the linear frame buffer
- * you should set bit 11 of mode to instruct the BIOS to use VbeCRTCInfo */
-static inline uint16_t VBE_SetVideoMode(struct VbeCRTCInfo *vci, uint16_t mode)
-{
-    uint16_t result;
-
-    __asm__ __volatile__ (
-        "mov $0x4f02,%%ax\n\t"
-        "mov %2,%%bx\n\t"
-        "mov %1,%%edi\n\t"
-        "int $0x10\n\t"
-        "mov %%ax,%0"
-        : "=g"(result)
-        : ""(vci), ""(mode)
-        : "edi", "bx", "ax"
-    );
-    return result;
-}
-%endif

@@ -5,6 +5,7 @@
 #include <sys/io.h>
 #include <sys/serial.h>
 #include <sys/graphics.h>
+#include <sys/vesa.h>
 
 void dump_page_tables()
 {
@@ -26,9 +27,23 @@ void dump_page_tables()
     PrintPT(stdout, pdt0, 8, 0, 4);
 }
 
+void dump_vesa_mode() {
+    char nbuf[20];
+    struct VbeModeInfo *vmi = (void *)0x7e00;
+    print("video: ");
+    print(itoa(vmi->Xres, 10, 1, nbuf));
+    print(" x ");
+    print(itoa(vmi->Yres, 10, 1, nbuf));
+    print(" x ");
+    print(itoa(vmi->bpp, 10, 1, nbuf));
+    print("  0x");
+    println(ltoa(vmi->physbase, 16, 8, nbuf));
+}
+
 int main(int argc, char *argv[], char *envp[])
 {
-    dump_page_tables();
+    // dump_page_tables();
+    dump_vesa_mode();
 
     println("Hi resolution graphics in long mode (64-bit) demo");
 

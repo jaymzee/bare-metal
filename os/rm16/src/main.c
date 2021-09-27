@@ -7,28 +7,14 @@
 #include <sys/serial.h>
 #include <sys/vesa.h>
 
-
-struct VbeInfo *vbe_info_p = (void *)0x11000;
-
 void ShowVesaModes(void)
 {
     char sbuf[80];
     char nbuf[20];
     struct VbeInfo vbe_info;
 
-    println("hi");
-    println(itoa((int)&vbe_info, 16, 8, nbuf));
-    println(itoa((int)vbe_info_p, 16, 8, nbuf));
-    getchar();
-
     print("Querying VESA Video modes INT 0x10, AX=0x4f00\n");
     int gi_status = VBE_GetInfo(&vbe_info);
-    print("Querying VESA Video modes INT 0x10, AX=0x4f00\n");
-    VBE_GetInfo(vbe_info_p);
-    getchar();
-    println("singature");
-    println(vbe_info_p->VbeSignature);
-    getchar();
 
     if (gi_status == 0x004f) { // data in vbe_info is valid
         int total_memory = vbe_info.TotalMemory << 16;

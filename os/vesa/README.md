@@ -25,7 +25,7 @@ memory map
     0x0000a000 0x0000afff PT for system memory (4 - 6MB)
     0x00009000 0x00009fff PT for system memory (2 - 4MB)
     0x00008000 0x00008fff PT for system memory (0 - 2MB)
-    0x00007e00 0x00007fff stage 1 bootblock
+    0x00007e00 0x00007fff VESA Video Mode Info
     0x00007c00 0x00007dff stage 0 bootblock
     0x00007000 0x00007bff stack for real mode
     0x00006000 0x00006fff PDT

@@ -12,11 +12,9 @@ GDTR        equ GDT + GDT_SIZE
 PML4T       equ 0x4000
 PT          equ 0x8000
 
-FBADDR      equ 0xfd000000  ; QEMU
-;FBADDR      equ 0xe0000000  ; BOCHS
-
 %include "cpumode.asm"
 %include "sys/bootutil.asm"
+%include "sys/vesa.asm"
 
 	bits 16
 	section .text.start exec align=16
@@ -28,8 +26,10 @@ _start:
 	mov	ss, ax
 	mov	bp, ax		; initialize ss:sp and ss:bp
 	mov	sp, 0x7c00
-	mov	si, greeting
-	call	_print
+
+	mov	di, 0x7e00
+	VBE_GetModeInfo 0x4144
+
 	call	_load_program
 	a20enbio
 	call	_init_page_tables
@@ -116,13 +116,14 @@ _init_fb_page_tables:
 	push	es
 	push	edi
 	cld
+	mov	ebx, [0x7e00 + VbeModeInfo.physbase]
 	mov	ax, 0x1000
 	mov	ds, ax
 	mov	es, ax
 	mov	eax, 0x1000	; page size
 	mov	edx, 0x10003	;
 	mov	edi, 0x0000	; first page table
-	mov	edx, FBADDR
+	mov	edx, ebx	; load fb address
 	or	edx, 3		; R/W and Present
 	mov	cx, 4096	; map 16MB
 .fillpt	mov	[edi], edx	; PT[n] = n*0x1000 + 3
@@ -188,7 +189,3 @@ gdt:
 	db 0b10101111		; flags Gr Sz L, Limit 16:19
 	db 0			; base 24:31
 .end:
-
-greeting:
-	db `loading...\r\n`, 0
-

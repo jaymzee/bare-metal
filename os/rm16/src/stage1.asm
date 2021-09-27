@@ -11,12 +11,6 @@
 _start:
 	push	greeting
 	call	_print
-	xor	edi, edi
-	mov	di, sp
-	sub	sp, 512
-	;VBE_GetInfo
-	;call	_print
-	add	sp, 512
 	cli				; disable interrupts
 	mov	dword [0x20], timerISR	; install ISR
 	sti				; enable interrupts
