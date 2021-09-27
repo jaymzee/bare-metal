@@ -1,3 +1,6 @@
+#ifndef STRING_H_INCLUDED
+#define STRING_H_INCLUDED
+
 #include <stdint.h>
 
 void *memset(void *dest, int val, size_t len);
@@ -9,3 +12,5 @@ char *itoa(int num, int base, int width, char *buf);
 char *ltoa(long num, int base, int width, char *buf);
 char *strtr(char *str, char repl, char with);
 char *strncpy(char *dest, const char *src, size_t n);
+
+#endif

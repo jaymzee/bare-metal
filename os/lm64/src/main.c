@@ -76,12 +76,28 @@ void ShowCPUID(void)
     println(itoa(result.reg.edx, 16, 8, buf));
 }
 
+void dump_page_tables()
+{
+    uint64_t *pml4t = (uint64_t *)0x4000;
+    uint64_t *pdpt0 = (uint64_t *)(pml4t[0] & PTE_ADDRMASK);
+    uint64_t *pdt0 = (uint64_t *)(pdpt0[0] & PTE_ADDRMASK);
+
+    // page map level 4 entries
+    PrintPTE(console, "PML4T[0]      = ", pml4t[0]);
+    // page directory pointer table entries
+    PrintPTE(console, "PDPT[0]       = ", pdpt0[0]);
+    // page directory table entries (page table locations)
+    PrintPDT(console, pdt0, 0, 4);
+    // first 4 page table entries
+    PrintPT(console, pdt0, 0, 0, 4);
+}
+
 int main(int argc, char *argv[], char *envp[])
 {
+    dump_page_tables();
     fputs("connect to serial 0 (COM1) for the console\n", console);
     InstallISRs(); // install keyboard handler
     ShowCPUID();
     Menu();
     return 0;
 }
-

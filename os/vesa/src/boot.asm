@@ -12,6 +12,9 @@ GDTR        equ GDT + GDT_SIZE
 PML4T       equ 0x4000
 PT          equ 0x8000
 
+FBADDR      equ 0xfd000000  ; QEMU
+;FBADDR      equ 0xe0000000  ; BOCHS
+
 %include "cpumode.asm"
 %include "sys/bootutil.asm"
 
@@ -119,7 +122,8 @@ _init_fb_page_tables:
 	mov	eax, 0x1000	; page size
 	mov	edx, 0x10003	;
 	mov	edi, 0x0000	; first page table
-	mov	edx, 0xfd000003	; R/W and Present
+	mov	edx, FBADDR
+	or	edx, 3		; R/W and Present
 	mov	cx, 4096	; map 16MB
 .fillpt	mov	[edi], edx	; PT[n] = n*0x1000 + 3
 	add	edx, eax

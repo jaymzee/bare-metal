@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 enum cpu_exception {
     EXC_DIVBYZERO = 0,      // Divide-by-zero Error
@@ -24,6 +25,21 @@ enum cpu_exception {
     EXC_SECURITY = 0x1e,    // Security Exception
     EXC_3X_FAULT = 0x1f     // Triple Fault
 };
+
+// page table entry
+#define PTE_ADDRMASK 0x000fffffFFFFF000
+#define PTE_PRESENT  1
+#define PTE_WRITABLE 2
+#define PTE_USER     4
+#define PTE_WRTHRU   8
+#define PTE_NOCACHE  16
+#define PTE_ACCESSED 32
+#define PTE_DIRTY    64
+#define PTE_HUGE     128
+#define PTE_GLOBAL   256
+#define PTE_NX       (1L << 63)
+
+void DumpPTE(char *buf, uint64_t pte, int os_bits);
 
 extern const char *cpu_exception[32];
 
@@ -100,6 +116,16 @@ union cpuid_result {
 //   ctrl: set to true to show cpu control registers
 // make sure sbuf is large enough to hold contents
 void DumpCPURegisters(char *sbuf, const struct cpu_reg *reg, int ctrl);
+
+// DumpPTE dumps a page table entry to buf
+void DumpPTE(char *buf, uint64_t pte, int os_bits);
+
+// PrintPTE decodes and prints a page table entry
+void PrintPTE(FILE *fp, char *prefix, uint64_t pte);
+// PrintPT prints a page table (an entry in the page directory table)
+void PrintPT(FILE *fp, uint64_t *pdt, int pdt_indx, int start, int stop);
+// PrintPDT prints a page directory table
+void PrintPDT(FILE *fp, uint64_t *pdt, int start, int stop);
 
 // DumpMem dumps memory starting from ptr as n machine words to sbuf
 // make sure sbuf is large enough to hold contents

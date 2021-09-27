@@ -228,6 +228,72 @@ void DumpCPURegisters(char *sbuf, const struct cpu_reg *reg, int ctrl)
 }
 #endif // 32-bit
 
+void DumpPTE(char *buf, uint64_t pte, int os_bits)
+{
+    char *p = buf;
+
+    // physical address (40 bits) display in hex
+    ltoa(pte & PTE_ADDRMASK, 16, 10, p);
+    p += 10;
+    *p++ = ':'; // overwrites null
+
+    // flags
+    *p++ = pte & PTE_NX ? 'n' : 'x';       // no execute
+    *p++ = pte & PTE_GLOBAL ? 'g' : '-';   // global
+    *p++ = pte & PTE_HUGE ? 'h' : '-';     // huge page
+    *p++ = pte & PTE_DIRTY ? 'd' : '-';    // page dirty
+    *p++ = pte & PTE_ACCESSED ? 'a' : '-'; // page accessed
+    *p++ = pte & PTE_NOCACHE ? '-' : 'c';  // disable cache
+    *p++ = pte & PTE_WRTHRU ? 'W' : 'C';   // write thru caching
+    *p++ = pte & PTE_USER ? 'u' : 'k';     // user accessible
+    *p++ = pte & PTE_WRITABLE ? 'w' : '-';
+    *p++ = pte & PTE_PRESENT ? 'p' : '-';
+
+    // os defined flags
+    if (os_bits) {
+        // os defined flags (62:52) display in binary
+        *p++ = ':';
+        for (int i = 0; i < 11; i++) {
+            *p++ = (pte >> (62-i)) & 1 ? '1' : '0';
+        }
+
+        // os defined flags (11:9) display in binary
+        *p++ = ':';
+        *p++ = pte & (1L << 11) ? '1' : '0';
+        *p++ = pte & (1L << 10) ? '1' : '0';
+        *p++ = pte & (1L << 9) ? '1' : '0';
+    }
+
+    *p++ = 0; // null terminator
+}
+
+void PrintPTE(FILE *fp, char *prefix, uint64_t pte) {
+    char buf[64];
+    DumpPTE(buf, pte, 1);
+    fputs(prefix, fp);
+    fputs(buf, fp);
+    fputc(10, fp);
+}
+
+void PrintPT(FILE *fp, uint64_t *pdt, int pdt_indx, int start, int stop) {
+    char nbuf[20];
+    uint64_t virtaddr = 0x200000 * pdt_indx;
+    uint64_t *pt = (uint64_t *)(pdt[pdt_indx] & PTE_ADDRMASK);
+
+    for (int i = start; i < stop; i++) {
+        fputs(ltoa(virtaddr + (i << 12), 16, 12, nbuf), fp);
+        PrintPTE(fp, " -> ", pt[i]);
+    }
+}
+
+void PrintPDT(FILE *fp, uint64_t *pdt, int start, int stop) {
+    char nbuf[20];
+    for (int i = start; i < stop; i++) {
+        fputs("PDT[", fp);
+        fputs(itoa(i, 10, 3, nbuf), fp);
+        PrintPTE(fp, "]      = ", pdt[i]);
+    }
+}
 
 #ifdef __x86_64__
 void CPUExceptionHandler(struct cpu_reg *reg, int except, int errcode)

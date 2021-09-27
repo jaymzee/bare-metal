@@ -1,3 +1,6 @@
+#ifndef STDIO_H_INCLUDED
+#define STDIO_H_INCLUDED
+
 #define print(s)    fputs(s, stdout)
 #define println(s)  puts(s)
 
@@ -15,3 +18,5 @@ extern FILE *stdin;
 extern FILE *stdout;
 extern FILE *stderr;
 extern FILE *console;
+
+#endif
