@@ -7,7 +7,7 @@
 #include <sys/graphics.h>
 #include <sys/vesa.h>
 
-void dump_page_tables()
+void print_page_tables()
 {
     uint64_t *pml4t = (uint64_t *)0x4000;
     uint64_t *pdpt0 = (uint64_t *)(pml4t[0] & PTE_ADDRMASK);
@@ -20,17 +20,25 @@ void dump_page_tables()
     // page directory table entries (page table locations)
     PrintPDT(stdout, pdt0, 0, 4);
     // page directory table entries (page table locations for framebuffer)
-    PrintPDT(stdout, pdt0, 8, 12);
+    PrintPDT(stdout, pdt0, 32, 36);
     // first 4 page table entries
     PrintPT(stdout, pdt0, 0, 0, 4);
     // first 4 page table entries (for framebuffer)
-    PrintPT(stdout, pdt0, 8, 0, 4);
+    PrintPT(stdout, pdt0, 32, 0, 4);
 }
 
-void dump_vesa_mode() {
+void print_vesa_mode() {
     char nbuf[20];
-    struct VbeModeInfo *vmi = (void *)0x7e00;
-    print("video: ");
+
+    int *mode = (int *)0x2100;
+    struct VbeInfo *vbi = (struct VbeInfo *)0x2200;
+    struct VbeModeInfo *vmi = (struct VbeModeInfo *)0x2400;
+
+    print("video ram: ");
+    println(ltoa((long)vbi->TotalMemory << 16, 10, 1, nbuf));
+    print("video mode: 0x");
+    print(itoa(*mode & 0xFFF, 16, 3, nbuf));
+    print("  ");
     print(itoa(vmi->Xres, 10, 1, nbuf));
     print(" x ");
     print(itoa(vmi->Yres, 10, 1, nbuf));
@@ -42,8 +50,8 @@ void dump_vesa_mode() {
 
 int main(int argc, char *argv[], char *envp[])
 {
-    // dump_page_tables();
-    dump_vesa_mode();
+    print_vesa_mode();
+    print_page_tables();
 
     println("Hi resolution graphics in long mode (64-bit) demo");
 

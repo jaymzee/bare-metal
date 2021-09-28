@@ -50,7 +50,7 @@ struct VbeCRTCInfo {
     unsigned char  reserved[40];
 } __attribute__((packed));
 
-static inline uint16_t VBE_GetInfo(struct VbeInfo *vib)
+uint16_t VBE_GetInfo(struct VbeInfo *vib)
 {
     uint16_t result;
     unsigned long vibhi = (unsigned long)vib >> 4 & 0xF000;
@@ -68,7 +68,7 @@ static inline uint16_t VBE_GetInfo(struct VbeInfo *vib)
     return result;
 }
 
-static inline uint16_t VBE_GetModeInfo(struct VbeModeInfo *vmi, uint16_t mode)
+uint16_t VBE_GetModeInfo(struct VbeModeInfo *vmi, uint16_t mode)
 {
     uint16_t result;
     unsigned long vmihi = (unsigned long)vmi >> 4 & 0xF000;
@@ -90,7 +90,7 @@ static inline uint16_t VBE_GetModeInfo(struct VbeModeInfo *vmi, uint16_t mode)
 /* VBE_SetVideoMode
  * you should or the mode with 0x4000 to make use of the linear frame buffer
  * you should set bit 11 of mode to instruct the BIOS to use VbeCRTCInfo */
-static inline uint16_t VBE_SetVideoMode(struct VbeCRTCInfo *vci, uint16_t mode)
+uint16_t VBE_SetVideoMode(struct VbeCRTCInfo *vci, uint16_t mode)
 {
     uint16_t result;
     unsigned long vcihi = (unsigned long)vci >> 4 & 0xF000;

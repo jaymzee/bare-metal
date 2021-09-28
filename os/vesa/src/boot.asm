@@ -11,6 +11,8 @@ GDT_SIZE    equ gdt.end - gdt
 GDTR        equ GDT + GDT_SIZE
 PML4T       equ 0x4000
 PT          equ 0x8000
+FBPTBASE    equ 0x28000
+VESA_MODE   equ 0x4144
 
 %include "cpumode.asm"
 %include "sys/bootutil.asm"
@@ -27,8 +29,11 @@ _start:
 	mov	bp, ax		; initialize ss:sp and ss:bp
 	mov	sp, 0x7c00
 
-	mov	di, 0x7e00
-	VBE_GetModeInfo 0x4144
+	mov	WORD [0x2100], VESA_MODE
+	mov	di, 0x2200
+	VbeGetInfo
+	mov	di, 0x2400
+	VbeGetModeInfo VESA_MODE
 
 	call	_load_program
 	a20enbio
@@ -40,23 +45,13 @@ _start:
 	xor	eax, eax
 	mov	[PT], eax	; unmap first page (0x00000000-0x00000FFF)
 	mov	[PT+4], eax
-	call	_set_video_mode
+	mov	di, 0
+	VbeSetVideoMode VESA_MODE
 	cli			; disable interrupts
 	clnmi			; disable NMI
 	stlgmd			; set long mode bit
 	lgdt	[GDTR]		; load the copied version
 	jmp	0x08:start64
-
-; ax, bx, di  clobbered
-; return value in ax
-_set_video_mode:
-	push	di
-	mov	ax, 0x4f02
-	mov	bx, 0x4144
-	mov	di, 0
-	int	10h
-	pop	di
-	ret
 
 ; ax, cx, dx  clobbered
 _load_program:
@@ -97,7 +92,9 @@ _init_page_tables:
 	add	edi, eax
 	mov	edx, PT | 3	; point to first page table
 	mov	ecx, 8
+	;xor	ebx, ebx	; nx bit cleared
 .pdt	mov	[edi], edx	; PDT[n] -> nth PT
+	;mov	[edi+1], ebx	; PDT[n] upper bits
 	add	edx, eax
 	add	edi, 8
 	loop	.pdt
@@ -116,13 +113,12 @@ _init_fb_page_tables:
 	push	es
 	push	edi
 	cld
-	mov	ebx, [0x7e00 + VbeModeInfo.physbase]
-	mov	ax, 0x1000
+	mov	ebx, [0x2400 + VbeModeInfo.physbase]
+	mov	ax, FBPTBASE >> 4
 	mov	ds, ax
 	mov	es, ax
 	mov	eax, 0x1000	; page size
-	mov	edx, 0x10003	;
-	mov	edi, 0x0000	; first page table
+	mov	edi, 0		; first page table
 	mov	edx, ebx	; load fb address
 	or	edx, 3		; R/W and Present
 	mov	cx, 4096	; map 16MB
@@ -134,10 +130,10 @@ _init_fb_page_tables:
 	mov	ds,ax
 	mov	es,ax
 	mov	eax, 0x1000		; size of page (4K)
-	mov	edx, 0x10003		; edx points to first fb page table
-	mov	edi, PML4T + 0x2040	; edi should now point to PDT[8]
+	mov	edx, FBPTBASE | 3	; edx points to first fb page table
+	mov	edi, PML4T + 0x2100	; edi should now point to PDT[8]
 	mov	cx, 8
-.pdtfb	mov	[edi], edx
+.pdtfb	mov	[edi], edx		; write entry
 	add	edx, eax
 	add	edi, 8
 	loop	.pdtfb

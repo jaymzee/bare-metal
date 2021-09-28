@@ -60,17 +60,17 @@ struc VbeCRTCInfo
 .reserved	resb	40
 endstruc
 
-; edi points to VbeInfo
+; es:di points to VbeInfo
 ; return value in ax
-%macro VBE_GetInfo 0
+%macro VbeGetInfo 0
 	mov	ax, 0x4f00
 	int	0x10
 %endmacro
 
-; edi points to VbeModeInfo
+; es:di points to VbeModeInfo
 ; cx is clobbered
 ; return value in ax
-%macro VBE_GetModeInfo 1
+%macro VbeGetModeInfo 1
 	mov	ax, 0x4f01
 	mov	cx, %1
 	int	0x10
@@ -79,11 +79,12 @@ endstruc
 ; VBE_SetVideoMode
 ; you should or the mode with 0x4000 to make use of the linear frame buffer
 ; you should set bit 11 of mode to instruct the BIOS to use VbeCRTCInfo
-; edi points to VbeCRTCInfo
-; bx is clobbered
+; es:di points to VbeCRTCInfo
 ; return value in ax
-%macro VBE_SetVideoMode 1
+%macro VbeSetVideoMode 1
+	push	bx
 	mov	ax, 0x4f02
 	mov	bx, %1
 	int	0x10
+	pop	bx
 %endmacro
