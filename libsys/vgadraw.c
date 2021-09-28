@@ -4,6 +4,7 @@
 
 #define SCREEN_WIDTH 320
 #define SET_PIXEL(x,y,c) video_ram[SCREEN_WIDTH*y+x]=c
+#define ABS(x) ((x) >= 0 ? (x) : (-x))
 
 /* VGA Mode 13h drawing functions */
 
@@ -19,49 +20,39 @@ SetPixel(uint16_t x, uint16_t y, uint8_t color)
 void
 DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color)
 {
-    int dx = x1 - x0;
-    int dy = y1 - y0;
+    const int dx = x1 - x0;
+    const int dy = y1 - y0;
+    const int incx = x1 > x0 ? 1 : -1;
+    const int incy = y1 > y0 ? 1 : -1;
     int x = x0;
     int y = y0;
-    int incx = 1;
-    int incy = 1;
-
-    if (dx < 0) {
-        dx = -dx;
-        incx = -1;
-    }
-
-    if (dy < 0) {
-        dy = -dy;
-        incy = -1;
-    }
 
     SET_PIXEL(x, y, color);
-    if (dx > dy) {
-        const int incrE = dy * 2;
-        const int incrSE = (dy - dx) * 2;
-        int d = dy * 2 - dx;
-        while (x < x1) {
+    if (ABS(dx) > ABS(dy)) {
+        const int incrE = 2 * ABS(dy);
+        const int incrSE = 2 * (ABS(dy) - ABS(dx));
+        int d = 2 * ABS(dy) - ABS(dx);
+        while (x != x1) {
             if (d <= 0) {
-                d += incrE;
+                d += incrE; // or W
                 x += incx;
             } else {
-                d += incrSE;
+                d += incrSE; // or NE, NW, SW
                 x += incx;
                 y += incy;
             }
             SET_PIXEL(x, y, color);
         }
     } else {
-        const int incrS = dx * 2;
-        const int incrSE = (dx - dy) * 2;
-        int d = dx * 2 - dy;
-        while (y < y1) {
+        const int incrS = 2 * ABS(dx);
+        const int incrSE = 2 * (ABS(dx) - ABS(dy));
+        int d = 2 * ABS(dx) - ABS(dy);
+        while (y != y1) {
             if (d <= 0) {
-                d += incrS;
+                d += incrS; // or N
                 y += incy;
             } else {
-                d += incrSE;
+                d += incrSE; // or SW, NW, NE
                 x += incx;
                 y += incy;
             }

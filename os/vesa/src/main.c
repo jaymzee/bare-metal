@@ -59,9 +59,9 @@ int main(int argc, char *argv[], char *envp[])
 
     // draw some lines
     LFB_DrawLine(0, 0, 1024, 768, 0x00FF00);
-    LFB_DrawLine(0, 768, 1024, 0, 0xFF0000);
-    LFB_DrawLine(0, 384, 1024, 384, 0x0000FF);
-    LFB_DrawLine(512, 0, 512, 768, 0xFFFF00);
+    LFB_DrawLine(1024, 0, 0, 768, 0xFF0000);
+    LFB_DrawLine(1024, 384, 0, 384, 0x0000FF);
+    LFB_DrawLine(512, 768, 512, 0, 0xFFFF00);
 
     while (1) {
         print("\npress a key ");
