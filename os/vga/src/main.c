@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/io.h>
-#include <sys/graphics.h>
+#include <sys/vga/draw.h>
+#include <sys/vga/reg.h>
 #include <sys/serial.h>
-#include <sys/vga.h>
 
 struct color pal1[256];
 

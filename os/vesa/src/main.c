@@ -4,8 +4,9 @@
 #include <sys/cpu.h>
 #include <sys/io.h>
 #include <sys/serial.h>
-#include <sys/graphics.h>
+#include <sys/lfb/draw.h>
 #include <sys/vesa.h>
+#include <stdint.h>
 
 void print_page_tables()
 {
@@ -27,7 +28,7 @@ void print_page_tables()
     PrintPT(stdout, pdt0, 32, 0, 4);
 }
 
-void print_vesa_mode() {
+void init_graphics() {
     char nbuf[20];
 
     int *mode = (int *)0x2100;
@@ -46,20 +47,21 @@ void print_vesa_mode() {
     print(itoa(vmi->bpp, 10, 1, nbuf));
     print("  0x");
     println(ltoa(vmi->physbase, 16, 8, nbuf));
+    LFB_Init((uint32_t *)0x04000000, vmi->Xres);
 }
 
 int main(int argc, char *argv[], char *envp[])
 {
-    print_vesa_mode();
+    init_graphics();
     print_page_tables();
 
     println("Hi resolution graphics in long mode (64-bit) demo");
 
     // draw some lines
-    DrawLine32(0, 0, 1024, 768, 0x00FF00);
-    DrawLine32(0, 768, 1024, 0, 0xFF0000);
-    DrawLine32(0, 384, 1024, 384, 0x0000FF);
-    DrawLine32(512, 0, 512, 768, 0xFFFF00);
+    LFB_DrawLine(0, 0, 1024, 768, 0x00FF00);
+    LFB_DrawLine(0, 768, 1024, 0, 0xFF0000);
+    LFB_DrawLine(0, 384, 1024, 384, 0x0000FF);
+    LFB_DrawLine(512, 0, 512, 768, 0xFFFF00);
 
     while (1) {
         print("\npress a key ");
