@@ -2,17 +2,20 @@
 # write boot sector and 2nd level boot loader to a 1.44MB floppy disk image
 import sys
 
-if len(sys.argv) != 4:
-    print("Usage: mkboot image bootloader program")
+if len(sys.argv) != 5:
+    print("Usage: mkboot image stage0 stage1 program")
     exit(1)
 
 with open(sys.argv[2], mode='rb') as file:
-    boot = file.read()
+    stage0 = file.read()
 with open(sys.argv[3], mode='rb') as file:
+    stage1 = file.read()
+with open(sys.argv[4], mode='rb') as file:
     prog = file.read()
 with open(sys.argv[1], mode='wb') as file:
-    file.write(boot)
+    file.write(stage0)
+    file.write(stage1)
     file.write(prog)
     # fill remaining blocks with zero
-    count = len(boot) + len(prog)
+    count = len(stage0) + len(stage1) + len(prog)
     file.write(bytes(2880*512 - count))

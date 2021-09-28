@@ -48,8 +48,6 @@ _print:
 
 greeting:
 	db `switch to serial 0 console\r\n`, 0
-tmpstr:
-	db "            ", 0
 
 	global tick_counter
 tick_counter:

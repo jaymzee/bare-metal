@@ -12,7 +12,6 @@ GDTR        equ GDT + GDT_SIZE
 PML4T       equ 0x4000
 PT          equ 0x8000
 FBPTBASE    equ 0x28000
-VESA_MODE   equ 0x4144
 
 %include "cpumode.asm"
 %include "sys/bootutil.asm"
@@ -22,23 +21,15 @@ VESA_MODE   equ 0x4144
 	section .text.start exec align=16
 	global _start
 _start:
-	xor	ax, ax
-	mov	ds, ax
-	mov	es, ax
-	mov	ss, ax
-	mov	bp, ax		; initialize ss:sp and ss:bp
-	mov	sp, 0x7c00
-
-	mov	WORD [0x2100], VESA_MODE
-	mov	di, 0x2200
-	VbeGetInfo
-	mov	di, 0x2400
-	VbeGetModeInfo VESA_MODE
+	mov	si, message
+	call	_print
 
 	call	_load_program
 	a20enbio
+
 	call	_init_page_tables
 	call	_init_fb_page_tables
+
 	mov	si, gdt
 	mov	di, GDT
 	gdtcpy	GDT_SIZE
@@ -46,7 +37,11 @@ _start:
 	mov	[PT], eax	; unmap first page (0x00000000-0x00000FFF)
 	mov	[PT+4], eax
 	mov	di, 0
-	VbeSetVideoMode VESA_MODE
+
+	mov	ax, 0x4f02	; SetVesaMode
+	mov	bx, [0x2100]	; get VESA mode saved earlier
+	int	0x10
+
 	cli			; disable interrupts
 	clnmi			; disable NMI
 	stlgmd			; set long mode bit
@@ -61,7 +56,7 @@ _load_program:
 	mov	al, 64		; sector count (32K)
 	mov	ch, 0		; cylinder
 	mov	dh, 0		; head
-	mov	cl, 2		; sector
+	mov	cl, 3		; sector
 	mov	dl, 0		; drive a (use 80h for 1st HD)
 	mov	bx, LOADADDR >> 4
 	mov	es, bx
@@ -92,9 +87,9 @@ _init_page_tables:
 	add	edi, eax
 	mov	edx, PT | 3	; point to first page table
 	mov	ecx, 8
-	;xor	ebx, ebx	; nx bit cleared
+	xor	ebx, ebx	; nx bit cleared
 .pdt	mov	[edi], edx	; PDT[n] -> nth PT
-	;mov	[edi+1], ebx	; PDT[n] upper bits
+	mov	[edi+4], ebx	; PDT[n] upper bits
 	add	edx, eax
 	add	edi, 8
 	loop	.pdt
@@ -113,16 +108,17 @@ _init_fb_page_tables:
 	push	es
 	push	edi
 	cld
-	mov	ebx, [0x2400 + VbeModeInfo.physbase]
+	mov	edx, [0x2400 + VbeModeInfo.physbase]
 	mov	ax, FBPTBASE >> 4
 	mov	ds, ax
 	mov	es, ax
 	mov	eax, 0x1000	; page size
 	mov	edi, 0		; first page table
-	mov	edx, ebx	; load fb address
 	or	edx, 3		; R/W and Present
 	mov	cx, 4096	; map 16MB
+	mov	ebx, 0x00000000
 .fillpt	mov	[edi], edx	; PT[n] = n*0x1000 + 3
+	mov	[edi+4], ebx	; set nx bit, clear upper phys addr bits
 	add	edx, eax
 	add	edi, 8
 	loop	.fillpt
@@ -185,3 +181,6 @@ gdt:
 	db 0b10101111		; flags Gr Sz L, Limit 16:19
 	db 0			; base 24:31
 .end:
+
+message:
+	db `stage 1\r\n`, 0
