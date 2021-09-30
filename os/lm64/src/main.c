@@ -88,13 +88,33 @@ void dump_page_tables()
     PrintPTE(console, "PDPT[0]       = ", pdpt0[0]);
     // page directory table entries (page table locations)
     PrintPDT(console, pdt0, 0, 4);
+    PrintPDT(console, pdt0, 16, 17);
     // first 4 page table entries
     PrintPT(console, pdt0, 0, 0, 4);
+    PrintPT(console, pdt0, 16, 0, 1);
+}
+
+#define IA32_APIC_BASE_MSR 0x1B
+void read_apic(void)
+{
+    char nbuf[20];
+    uint32_t *apic = (void *)0x2000900;
+    uint32_t eax, edx;
+
+    cpuGetMSR(IA32_APIC_BASE_MSR, &eax, &edx);
+
+    println(itoa(eax, 16, 8, nbuf));
+    println(itoa(edx, 16, 8, nbuf));
+    println(itoa(apic[0x20], 16, 8, nbuf));
+    println(itoa(apic[0x30], 16, 8, nbuf));
+    println(itoa(apic[0xF0], 16, 8, nbuf));
 }
 
 int main(int argc, char *argv[], char *envp[])
 {
     dump_page_tables();
+    read_apic();
+
     fputs("connect to serial 0 (COM1) for the console\n", console);
     InstallISRs(); // install keyboard handler
     ShowCPUID();

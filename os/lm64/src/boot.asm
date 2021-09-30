@@ -30,6 +30,16 @@ _start:
 	call	_load_program
 	a20enbio
 	call	_init_page_tables
+
+	; map apic registers into virt addr space
+	mov	DWORD [0x6080], 0x30003
+	push	ds
+	mov	ax, 0x3000
+	mov	ds, ax
+	mov	di, 0
+	mov	DWORD [di], 0xFEE00003
+	pop	ds
+
 	mov	si, gdt
 	mov	di, GDT
 	gdtcpy	GDT_SIZE

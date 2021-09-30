@@ -7,8 +7,10 @@ single stage bootloader puts CPU into long mode, then executes the 64-bit demo
 
 memory map
 
+    0x02000000 0x02000fff local APIC registers
     0x00f00000 0x00ffffff stack for protected mode 1M
     0x00040000 0x00eFFFFF program memory (14.75MB)
+    0x00030000 0x00030fff local APIC PT
     0x0000f000 0x0000ffff PT 14 - 16MB of memory
     0x0000e000 0x0000efff PT 12 - 14MB of memory
     0x0000d000 0x0000dfff PT 10 - 12MB of memory
@@ -20,7 +22,7 @@ memory map
     0x00007e00 0x00007fff stage 1 bootblock
     0x00007c00 0x00007dff stage 0 bootblock
     0x00007000 0x00007bff stack for real mode
-    0x00006000 0x00006fff PDT
+    0x00006000 0x00006fff PDT0
     0x00005000 0x00005fff PDPT
     0x00004000 0x00004fff PML4T
     0x00003000 0x00003fff GDT

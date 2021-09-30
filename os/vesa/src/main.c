@@ -21,11 +21,11 @@ void print_page_tables()
     // page directory table entries (page table locations)
     PrintPDT(stdout, pdt0, 0, 4);
     // page directory table entries (page table locations for framebuffer)
-    PrintPDT(stdout, pdt0, 32, 36);
+    PrintPDT(stdout, pdt0, 8, 9);
     // first 4 page table entries
     PrintPT(stdout, pdt0, 0, 0, 4);
     // first 4 page table entries (for framebuffer)
-    PrintPT(stdout, pdt0, 32, 0, 4);
+    PrintPT(stdout, pdt0, 8, 0, 4);
 }
 
 void init_graphics() {
@@ -47,7 +47,7 @@ void init_graphics() {
     print(itoa(vmi->bpp, 10, 1, nbuf));
     print("  0x");
     println(ltoa(vmi->physbase, 16, 8, nbuf));
-    LFB_Init((uint32_t *)0x04000000, vmi->Xres);
+    LFB_Init((uint32_t *)0x01000000, vmi->Xres);
 }
 
 int main(int argc, char *argv[], char *envp[])

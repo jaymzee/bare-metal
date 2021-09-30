@@ -132,3 +132,8 @@ void PrintPDT(FILE *fp, uint64_t *pdt, int start, int stop);
 void DumpMem(char *sbuf, void *ptr, int n);
 
 void _cpuid(struct cpuid_reg *result, uint32_t eax);
+
+static inline void cpuGetMSR(uint32_t msr, uint32_t *lo, uint32_t *hi)
+{
+   __asm__ __volatile__("rdmsr" : "=a"(*lo), "=d"(*hi) : "c"(msr));
+}

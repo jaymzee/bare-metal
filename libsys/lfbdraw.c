@@ -14,7 +14,7 @@ LFB_Init(uint32_t *address, uint16_t xres) {
 inline void
 LFB_SetPixel(uint16_t x, uint16_t y, uint32_t color)
 {
-    framebuffer[FBWIDTH*y+x]=color;
+    framebuffer[y*fb_xres + x]=color;
 }
 
 // Midpoint algorithm for 2D line

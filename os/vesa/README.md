@@ -6,7 +6,7 @@ single stage bootloader puts CPU into long mode with paging and runs demo
 
 memory map
 
-    0x04000000 0x04ffffff framebuffer (maps to phys addr 0xfd000000)
+    0x01000000 0x01ffffff framebuffer (maps to phys addr 0xfd000000)
     0x00f00000 0x00ffffff stack for protected mode 1M
     0x00040000 0x00eFFFFF program memory (14.75MB)
     0x00028000 0x0002ffff PTs for framebuffer (16MB)

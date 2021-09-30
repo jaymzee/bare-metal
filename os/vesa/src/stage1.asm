@@ -80,25 +80,25 @@ _init_page_tables:
 	mov	eax, 0x1000	; eax = page size
 	mov	edx, edi
 	add	edx, 0x1003	; edx -> next page table
-	mov	[edi], edx	; PML4T[0] -> PDPT
+	mov	[di], edx	; PML4T[0] -> PDPT
 	add	edi, eax
 	add	edx, eax
-	mov	[edi], edx	; PDPT[0] -> PDT
+	mov	[di], edx	; PDPT[0] -> PDT
 	add	edi, eax
 	mov	edx, PT | 3	; point to first page table
 	mov	ecx, 8
 	xor	ebx, ebx	; nx bit cleared
-.pdt	mov	[edi], edx	; PDT[n] -> nth PT
-	mov	[edi+4], ebx	; PDT[n] upper bits
+.pdt	mov	[di], edx	; PDT[n] -> nth PT
+	mov	[di+4], ebx	; PDT[n] upper bits
 	add	edx, eax
-	add	edi, 8
+	add	di, 8
 	loop	.pdt
 	mov	edi, PT		; first page table
 	mov	edx, 3		; R/W and Present
 	mov	ecx, 4096	; identity map first 16MB
-.fillpt	mov	[edi], edx	; PT[n] = n*4096 + 3
+.fillpt	mov	[di], edx	; PT[n] = n*4096 + 3
 	add	edx, eax
-	add	edi, 8
+	add	di, 8
 	loop	.fillpt
 	pop	edi
 	ret
@@ -117,8 +117,8 @@ _init_fb_page_tables:
 	or	edx, 3		; R/W and Present
 	mov	cx, 4096	; map 16MB
 	mov	ebx, 0x00000000
-.fillpt	mov	[edi], edx	; PT[n] = n*0x1000 + 3
-	mov	[edi+4], ebx	; set nx bit, clear upper phys addr bits
+.fillpt	mov	[di], edx	; PT[n] = n*0x1000 + 3
+	mov	[di+4], ebx	; set nx bit, clear upper phys addr bits
 	add	edx, eax
 	add	edi, 8
 	loop	.fillpt
@@ -127,11 +127,11 @@ _init_fb_page_tables:
 	mov	es,ax
 	mov	eax, 0x1000		; size of page (4K)
 	mov	edx, FBPTBASE | 3	; edx points to first fb page table
-	mov	edi, PML4T + 0x2100	; edi should now point to PDT[8]
+	mov	di, PML4T + 0x2040	; edi should now point to PDT[8]
 	mov	cx, 8
-.pdtfb	mov	[edi], edx		; write entry
+.pdtfb	mov	[di], edx		; write entry
 	add	edx, eax
-	add	edi, 8
+	add	di, 8
 	loop	.pdtfb
 	pop	edi
 	pop	es

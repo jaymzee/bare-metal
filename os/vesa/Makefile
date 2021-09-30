@@ -10,7 +10,6 @@ CFLAGS = -g -std=c99 -pedantic -Wall -Werror
 CFLAGS += -m64 -ffreestanding -mno-red-zone
 CFLAGS += -fno-exceptions -fno-asynchronous-unwind-tables
 CFLAGS += -nostdinc -I $(INCLUDE) -include _default.h
-CFLAGS += -DFBWIDTH=1024
 ASFLAGS = -g -F dwarf -f elf64 -i $(addsuffix /asm/,$(INCLUDE))
 ASFLAGS16 = -g -F dwarf -f elf -i $(addsuffix /asm/,$(INCLUDE))
 LDFLAGS = --nmagic  # --nmagic eliminates gaps between sections
