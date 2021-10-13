@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/interrupt.h>
 #include <sys/test.h>
@@ -24,6 +25,19 @@ void InstallISRs(void)
     PIC_UnmaskIRQ(1); // enable keyboard IRQ
 }
 
+void malloc_test(void)
+{
+    char sbuf[80];
+    void *p1 = malloc(1024);
+    void *p2 = malloc(1024);
+    print("p1: ");
+    println(ltoa((long)p1, 16, 8, sbuf));
+    print("p2: ");
+    println(ltoa((long)p2, 16, 8, sbuf));
+    free(p1);
+    free(p2);
+}
+
 void Menu(void)
 {
     char sbuf[32];
@@ -46,6 +60,9 @@ void Menu(void)
             break;
         case 'p':
             CausePageFault();
+            break;
+        case 'm':
+            malloc_test();
             break;
         }
     }

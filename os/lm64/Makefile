@@ -1,6 +1,6 @@
 TARGET = boot.img
 OBJECTS = main.o isr.o
-OBJECTS += crt0.o crt1.o stdio.o string.o
+OBJECTS += crt0.o crt1.o stdlib.o stdio.o string.o
 OBJECTS += conio.o kbd_US.o serial.o timer.o interrupt.o cpu.o
 LIBC = ../../libc
 LIBSYS = ../../libsys

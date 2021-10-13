@@ -11,11 +11,9 @@ typedef unsigned int uint32_t;
 #if __x86_64__
     typedef signed long int64_t;
     typedef unsigned long uint64_t;
-    typedef unsigned long size_t;
 #else
     typedef signed long long int64_t;
     typedef unsigned long long uint64_t;
-    typedef unsigned long size_t;
 #endif
 
 #endif
