@@ -131,7 +131,7 @@ int main(int argc, char *argv[], char *envp[])
 {
     dump_page_tables();
     read_apic();
-
+    brk((void *)0x50000);   // set the program break (malloc start address)
     fputs("connect to serial 0 (COM1) for the console\n", console);
     InstallISRs(); // install keyboard handler
     ShowCPUID();

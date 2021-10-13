@@ -114,6 +114,9 @@ int rand_r(unsigned int *seedp)
 }
 
 #define NALLOC 4096  // units to allocate at once
+                     // if sizeof HEADER is 16 (the case x86_64)
+                     // 4096 units is 64KB, this is how much
+                     // morecore will allocate at a time
 
 typedef struct header { // free block header
     struct header *next;  // next free block
@@ -209,9 +212,15 @@ void *malloc(size_t nbytes)
     }
 }
 
-static void *program_break = (void *)0x50000;
+static void *program_break;
 
-static void *my_sbrk(size_t nbytes)
+int brk(void *addr)
+{
+    program_break = addr;
+    return 0;
+}
+
+void *sbrk(size_t nbytes)
 {
     char *old_break = program_break;
     program_break = old_break + nbytes;
@@ -237,7 +246,7 @@ static Header *morecore(size_t nunits)
      * location of the program break, which defines the end of the process's
      * data segment.
      */
-    freemem = my_sbrk(nunits * sizeof(Header));
+    freemem = sbrk(nunits * sizeof(Header));
     // case: unable to allocate more memory; my_sbrk returns NULL on error
     if (freemem == NULL) {
         return NULL;

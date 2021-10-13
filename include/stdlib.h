@@ -11,5 +11,7 @@ long atol(char *string);
 int rand_r(unsigned int *seedp);
 void *malloc(size_t nbytes);
 void free(void *ptr);
+int brk(void *addr);
+void *sbrk(size_t increment);
 
 #endif
