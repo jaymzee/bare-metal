@@ -52,6 +52,7 @@ void init_graphics() {
 
 int main(int argc, char *argv[], char *envp[])
 {
+    brk((void *)0x50000);
     init_graphics();
     print_page_tables();
 
