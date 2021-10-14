@@ -30,4 +30,4 @@ foreva:
 greeting0:
 	db "hello", 0
 
-%include "sys/bootutil.asm"
+%include "bootutil.asm"

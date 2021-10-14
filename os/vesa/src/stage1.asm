@@ -14,8 +14,8 @@ PT          equ 0x8000
 FBPTBASE    equ 0x28000
 
 %include "cpumode.asm"
-%include "sys/bootutil.asm"
-%include "sys/vesa.asm"
+%include "bootutil.asm"
+%include "vesa.asm"
 
 	bits 16
 	section .text.start exec align=16

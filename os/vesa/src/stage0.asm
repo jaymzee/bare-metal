@@ -2,8 +2,8 @@
 ; floppy disk stage 0 boot loader
 ; assemble with nasm
 
-%include "sys/bootutil.asm"
-%include "sys/vesa.asm"
+%include "bootutil.asm"
+%include "vesa.asm"
 
 LOADADDR    equ 0x7e00
 VESA_MODE   equ 0x4144

@@ -1,7 +1,7 @@
 ; second stage bootloader
 ; stage 0 loads 32KB of data so Main should immediately follows this
 
-%include "sys/vesa.asm"
+%include "vesa.asm"
 
 	extern Main
 

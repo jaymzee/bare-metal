@@ -13,7 +13,7 @@ PML4T       equ 0x4000
 PT          equ 0x8000
 
 %include "cpumode.asm"
-%include "sys/bootutil.asm"
+%include "bootutil.asm"
 
 	bits 16
 	section .text.start exec align=16
