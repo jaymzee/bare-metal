@@ -1,10 +1,11 @@
 #include <crt0.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/cpu.h>
 #include <sys/interrupt.h>
 #include <sys/serial.h>
 #include <sys/timer.h>
+#include <sys/x86.h>
+
 #include "cpuexchndlrs.h"
 
 #define CS 0x08

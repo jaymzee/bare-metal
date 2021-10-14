@@ -2,7 +2,7 @@
 #include <string.h>
 #include <sys/conio.h>
 #include <sys/serial.h>
-#include <sys/cpu.h>
+#include <sys/x86.h>
 #include "intsetup.h"
 
 extern void CauseGPFault(void);

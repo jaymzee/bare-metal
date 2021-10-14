@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include <sys/cpu.h>
 #include <sys/idt.h>
+#include <sys/x86.h>
 
 // TODO: startup code should determine this rather than hard coding
 #define STACK_TOP 0x1000000

@@ -1,7 +1,7 @@
 TARGET = boot.img
 OBJECTS = main.o
 OBJECTS += crt0.o crt1.o stdlib.o stdio.o string.o
-OBJECTS += conio.o kbd_US.o serial.o lfbdraw.o interrupt.o timer.o cpu.o
+OBJECTS += conio.o kbd_US.o serial.o lfbdraw.o interrupt.o timer.o x86.o
 LIBC = ../../libc
 LIBSYS = ../../libsys
 INCLUDE = ../../include

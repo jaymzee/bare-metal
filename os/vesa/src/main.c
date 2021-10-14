@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/cpu.h>
 #include <sys/io.h>
 #include <sys/serial.h>
 #include <sys/lfb/draw.h>
 #include <sys/vesa.h>
+#include <sys/x86.h>
 #include <stdint.h>
 
 void print_page_tables()

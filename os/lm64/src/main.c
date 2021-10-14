@@ -4,8 +4,7 @@
 #include <sys/interrupt.h>
 #include <sys/test.h>
 #include <sys/timer.h>
-
-#include <sys/cpu.h>
+#include <sys/x86.h>
 
 #include "isr.h"
 
